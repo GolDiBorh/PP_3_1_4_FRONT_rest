@@ -4,8 +4,30 @@
     <title>Spring Security Example</title>
 </head>
 <body>
-<h1>User, welcome spring boot security page!</h1>
+<div align="center">
+    <h2>User</h2>
+<form th:method="GET" th:action="@{/user/{id}(id = ${user.getId()})}" th:object="${user}">
 
 
+</form>
+<table border="1" cellpadding="5">
+    <tr>
+        <th>ID</th>
+        <th>Name</th>
+        <th>Password</th>
+        <th>E-mail</th>
+        <th>Age</th>
+    </tr>
+    <th:block th:each="usr : ${user}">
+        <tr>
+            <td th:text="${user.getId()}"></td>
+            <td th:text="${user.getUsername()}"></td>
+            <td th:text="${user.getPassword()}"></td>
+            <td th:text="${user.getEmail()}"></td>
+            <td th:text="${user.getAge()}"></td>
+        </tr>
+    </th:block>
+</table>
+</div>
 </body>
 </html>
