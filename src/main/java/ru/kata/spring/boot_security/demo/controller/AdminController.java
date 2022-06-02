@@ -16,10 +16,10 @@ public class AdminController {
         this.userService = userService;
     }
 
-    @GetMapping(value = "/admin/")
+    @GetMapping(value = "/admin")
     public String printWelcome(ModelMap model) {
 
-        model.addAttribute("messages", userService.listUsers());
+        model.addAttribute("messages", userService.findAllUsers());
         return "index";
     }
 
@@ -30,24 +30,24 @@ public class AdminController {
 
     @PostMapping
     public String create(@ModelAttribute("user") User user){
-        userService.add(user);
-        return "redirect:/admin/";
+        userService.saveUser(user);
+        return "redirect:/admin";
     }
     @GetMapping(value = "/admin/edit/{id}")
     public String editUser(Model model, @PathVariable("id") long id) {
-        model.addAttribute("user", userService.show(id));
+        model.addAttribute("user", userService.getUserById(id));
         return "edit";
     }
 
     @PatchMapping(value = "/admin/id")
     public String update(@ModelAttribute("user") User user){
-        userService.update(user);
+        userService.updateUser(user);
 
-        return "redirect:/admin/";
+        return "redirect:/admin";
     }
     @DeleteMapping(value = "/admin/{id}")
     public String delete(@PathVariable("id") long id){
-        userService.delete(id);
-        return "redirect:/admin/";
+        userService.deleteUserById(id);
+        return "redirect:/admin";
     }
 }

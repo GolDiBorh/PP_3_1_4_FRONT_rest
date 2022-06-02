@@ -31,11 +31,11 @@
                 <td th:text="${msg.getEmail()}"></td>
                 <td th:text="${msg.getAge()}"></td>
                 <td>
-                    <form th:method="GET" th:action="@{edit/{id}(id = ${msg.getId()})}" th:object="${msg}">
+                    <form th:method="GET" th:action="@{/admin/edit/{id}(id = ${msg.getId()})}" th:object="${msg}">
                             <input type="submit" value="Update"/>
 
                         </form>
-                    <form th:method="DELETE" th:action="@{{id}(id = ${msg.getId()})}">
+                    <form th:method="DELETE" th:action="@{/admin/{id}(id = ${msg.getId()})}">
                         <input type="submit" value="Delete"/>
                     </form>
                 </td>

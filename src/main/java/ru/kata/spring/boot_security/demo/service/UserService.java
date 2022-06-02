@@ -16,14 +16,14 @@ import java.util.List;
 @Transactional
 public class UserService implements UserDetailsService {
 
-    UserRepository userRepository;
+    private final UserRepository userRepository;
     @Autowired
     public UserService(UserRepository userRepository) {
         this.userRepository = userRepository;
     }
     @Autowired
     private PasswordEncoder passwordEncoder;
-    public User findByUsername(String username){
+    public  User findByUsername(String username){
         return userRepository.findByUsername(username);
     }
 
@@ -33,35 +33,35 @@ public class UserService implements UserDetailsService {
     @Override
 
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        User user = userRepository.findByUsername(username);
-
-        return new org.springframework.security.core.userdetails
-                .User(user.getUsername(), passwordEncoder.encode(user.getPassword()) ,user.getRoles());
+        return new org.springframework.security.core.userdetails.User(
+                findByUsername(username).getUsername(),
+                passwordEncoder.encode(findByUsername(username).getPassword()),
+                findByUsername(username).getRoles());
     }
 
 
     @Transactional
-    public void add(User user) {
+    public void saveUser(User user) {
         userRepository.save(user);
     }
 
-    public List<User> listUsers() {
+    public List<User> findAllUsers() {
         return userRepository.findAll();
     }
 
 
-    public User show(Long id) {
+    public User getUserById(Long id) {
         return userRepository.getOne(id);
     }
 
     @Transactional
-    public void update( User user) {
+    public void updateUser( User user) {
         userRepository.save(user);
 
     }
 
     @Transactional
-    public void delete(Long id) {
+    public void deleteUserById(Long id) {
         userRepository.deleteById(id);
     }
 }
