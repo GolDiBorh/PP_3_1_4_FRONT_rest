@@ -23,7 +23,15 @@ public class UserService implements UserDetailsService {
     }
     @Autowired
     private PasswordEncoder passwordEncoder;
-    public  User findByUsername(String username){
+    public org.springframework.security.core.userdetails.User findByUsername(String username){
+        User user = findByUsername1(username);
+
+        return new org.springframework.security.core.userdetails.User(
+                user.getUsername(),
+                passwordEncoder.encode(user.getPassword()),
+                user.getRoles());
+    }
+    public  User findByUsername1(String username){
         return userRepository.findByUsername(username);
     }
 
@@ -33,15 +41,14 @@ public class UserService implements UserDetailsService {
     @Override
 
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        return new org.springframework.security.core.userdetails.User(
-                findByUsername(username).getUsername(),
-                passwordEncoder.encode(findByUsername(username).getPassword()),
-                findByUsername(username).getRoles());
+
+        return findByUsername(username);
     }
 
 
     @Transactional
     public void saveUser(User user) {
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
         userRepository.save(user);
     }
 
