@@ -7,14 +7,17 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import ru.kata.spring.boot_security.demo.model.Role;
 import ru.kata.spring.boot_security.demo.model.User;
 import ru.kata.spring.boot_security.demo.repository.UserRepository;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Service
 @Transactional
-public class UserService implements UserDetailsService {
+public class UserService {
 
     private final UserRepository userRepository;
     @Autowired
@@ -23,32 +26,14 @@ public class UserService implements UserDetailsService {
     }
     @Autowired
     private PasswordEncoder passwordEncoder;
-    public org.springframework.security.core.userdetails.User findByUsername(String username){
-        User user = findByUsername1(username);
 
-        return new org.springframework.security.core.userdetails.User(
-                user.getUsername(),
-                passwordEncoder.encode(user.getPassword()),
-                user.getRoles());
-    }
-    public  User findByUsername1(String username){
+    public  User findByUsername(String username){
         return userRepository.findByUsername(username);
     }
 
-
-
-
-    @Override
-
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-
-        return findByUsername(username);
-    }
-
-
     @Transactional
     public void saveUser(User user) {
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
+//        user.setPassword(passwordEncoder.encode(user.getPassword()));
         userRepository.save(user);
     }
 
@@ -70,5 +55,23 @@ public class UserService implements UserDetailsService {
     @Transactional
     public void deleteUserById(Long id) {
         userRepository.deleteById(id);
+    }
+//    public User(String username, String password, String email, int age, Set<Role> roles) {
+//        this.username = username;
+//        this.password = password;
+//        this.email = email;
+//        this.age = age;
+//        this.roles = roles;
+//    }
+    public void setInitData() {
+        Role userRole = new Role("ROLE_USER");
+        Role adminRole = new Role("ROLE_ADMIN");
+        userRepository.save(new User("user","user", "user@mail.ru", 33, new HashSet<Role>() {{
+            add(userRole);
+        }}));
+        userRepository.save(new User("admin", "admin", "admin@mail.ru", 33, new HashSet<Role>() {{
+            add(userRole);
+            add(adminRole);
+        }}));
     }
 }
