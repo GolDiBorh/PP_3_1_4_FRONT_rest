@@ -29,10 +29,6 @@ public class Role {
 
     public Role() {
     }
-    //    @Override
-//    public String getAuthority() {
-//        return getName();
-//    }
 
     @Override
     public String toString() {

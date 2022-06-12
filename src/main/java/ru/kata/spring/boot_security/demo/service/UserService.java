@@ -16,24 +16,24 @@ import java.util.List;
 import java.util.Set;
 
 @Service
-@Transactional
+
 public class UserService {
 
     private final UserRepository userRepository;
+
     @Autowired
     public UserService(UserRepository userRepository) {
         this.userRepository = userRepository;
     }
-    @Autowired
-    private PasswordEncoder passwordEncoder;
 
-    public  User findByUsername(String username){
+
+    @Transactional
+    public User findByUsername(String username) {
         return userRepository.findByUsername(username);
     }
 
     @Transactional
     public void saveUser(User user) {
-//        user.setPassword(passwordEncoder.encode(user.getPassword()));
         userRepository.save(user);
     }
 
@@ -47,26 +47,26 @@ public class UserService {
     }
 
     @Transactional
-    public void updateUser( User user) {
-        userRepository.save(user);
-
+    public void update(Long id, User user) {
+        User userToUpdate = userRepository.getById(id);
+        userToUpdate.setUsername(user.getUsername());
+        userToUpdate.setPassword(user.getPassword());
+        userToUpdate.setEmail(user.getEmail());
+        userToUpdate.setAge(user.getAge());
+        userToUpdate.setRoles(user.getRoles());
+        userRepository.save(userToUpdate);
     }
 
     @Transactional
     public void deleteUserById(Long id) {
         userRepository.deleteById(id);
     }
-//    public User(String username, String password, String email, int age, Set<Role> roles) {
-//        this.username = username;
-//        this.password = password;
-//        this.email = email;
-//        this.age = age;
-//        this.roles = roles;
-//    }
+
+    @Transactional
     public void setInitData() {
         Role userRole = new Role("ROLE_USER");
         Role adminRole = new Role("ROLE_ADMIN");
-        userRepository.save(new User("user","user", "user@mail.ru", 33, new HashSet<Role>() {{
+        userRepository.save(new User("user", "user", "user@mail.ru", 33, new HashSet<Role>() {{
             add(userRole);
         }}));
         userRepository.save(new User("admin", "admin", "admin@mail.ru", 33, new HashSet<Role>() {{
