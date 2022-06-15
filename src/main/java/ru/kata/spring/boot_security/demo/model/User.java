@@ -34,7 +34,7 @@ public class User {
     public User() {
     }
 
-    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH}, fetch = FetchType.EAGER)
+    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH}, fetch = FetchType.LAZY)
     @JoinTable(name = "users_roles",
             joinColumns = @JoinColumn(name = "user_id", nullable = false, updatable = false),
             inverseJoinColumns = @JoinColumn(name = "role_id", nullable = false, updatable = false))
@@ -46,18 +46,6 @@ public class User {
         this.email = email;
         this.age = age;
         this.roles = roles;
-    }
-    public String getRolesAsString() {
-        boolean first = true;
-        String s = "";
-        for (Role role : getRoles()) {
-            if (!first) {
-                s += ", ";
-            }
-            s += role.toString();
-            first = false;
-        }
-        return s;
     }
 
     public void addRole(Role role) {

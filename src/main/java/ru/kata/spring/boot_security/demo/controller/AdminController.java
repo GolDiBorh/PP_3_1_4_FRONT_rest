@@ -15,11 +15,16 @@ import java.security.Principal;
 @RequestMapping("/admin")
 public class AdminController {
 
-    @Autowired
-    UserService userService;
+    private final UserService userService;
+
+    private final
+    RoleService roleService;
 
     @Autowired
-    RoleService roleService;
+    public AdminController(UserService userService, RoleService roleService) {
+        this.userService = userService;
+        this.roleService = roleService;
+    }
 
     @GetMapping(value = "")
     public String getAdminPage(Model model, Principal principal) {
@@ -32,9 +37,9 @@ public class AdminController {
 
     @PostMapping("/addUser")
     public String createUser(@ModelAttribute("emptyUser") User user,
-                             @RequestParam(value = "checkedRoles") String[] selectResult) {
-        for (String s : selectResult) {
-            user.addRole(roleService.getByName("ROLE_" + s));
+                             @RequestParam(value = "id") Long[] id) {
+        for (Long s : id) {
+            user.addRole(roleService.getRoleById(s));
         }
         userService.saveUser(user);
         return "redirect:/admin";
@@ -48,9 +53,9 @@ public class AdminController {
 
     @PostMapping("/updateUser/{id}")
     public String updateUser(@ModelAttribute("emptyUser") User user, @PathVariable("id") Long id,
-                             @RequestParam(value = "userRolesSelector") String[] selectResult) throws Exception {
-        for (String s : selectResult) {
-            user.addRole(roleService.getByName("ROLE_" + s));
+                             @RequestParam(value = "userRolesSelector") Long[] selectResult) throws Exception {
+        for (Long s : selectResult) {
+            user.addRole(roleService.getRoleById(s));
         }
         userService.update(id, user);
         return "redirect:/admin";

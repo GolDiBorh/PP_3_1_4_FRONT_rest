@@ -7,6 +7,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.kata.spring.boot_security.demo.model.Role;
 import ru.kata.spring.boot_security.demo.model.User;
 
@@ -24,24 +25,13 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     }
 
     @Override
+    @Transactional
     public UserDetails loadUserByUsername(String s) throws UsernameNotFoundException {
 
         User user = userService.findByUsername(s);
-        List<GrantedAuthority> authorities = getUserAuthority(user.getRoles());
-        return buildUserForAuthentication(user, authorities);
+        List<GrantedAuthority> authorities = userService.getUserAuthority(user.getRoles());
+        return userService.buildUserForAuthentication(user, authorities);
     }
 
-    private List<GrantedAuthority> getUserAuthority(Set<Role> userRoles) {
-        Set<GrantedAuthority> roles = new HashSet<GrantedAuthority>();
-        for (Role role : userRoles) {
-            roles.add(new SimpleGrantedAuthority(role.getName()));
-        }
-        List<GrantedAuthority> grantedAuthorities = new ArrayList<>(roles);
-        return grantedAuthorities;
-    }
 
-    private UserDetails buildUserForAuthentication(User user, List<GrantedAuthority> authorities) {
-        return new org.springframework.security.core.userdetails.User(user.getUsername(), user.getPassword(),
-                true, true, true, true, authorities);
-    }
 }

@@ -78,7 +78,7 @@
                                 <td th:text="${userf.getUsername()}"></td>
                                 <td th:text="${userf.getEmail()}"></td>
                                 <td th:text="${userf.getAge()}"></td>
-                                <td th:text="${userf.getRolesAsString()}"></td>
+                                <td th:text="${userf.getRoles()}"></td>
                                 <td>
                                     <button type="button" class="btn btn-info" data-bs-toggle="modal"
                                             th:attr="data-bs-target='#editModal'+${userf.id}">
@@ -133,17 +133,17 @@
                                             </div>
 
                                             <div class="form-group m-3" readonly="readonly">
-                                                <label for="roles">Role</label>
+                                                <label for="id">Role</label>
                                                 <select class="form-select w-100" multiple
                                                         aria-label="multiple select example"
                                                         size="2"
-                                                        id="roles"
-                                                        name="checkedRoles">
-                                                    <option selected="true">
-                                                        USER
+                                                        id="id"
+                                                        name="id">
+                                                    <option selected="true" value="2">
+                                                        User
                                                     </option>
-                                                    <option>
-                                                        ADMIN
+                                                    <option value="4">
+                                                        Admin
                                                     </option>
                                                 </select>
                                             </div>
@@ -334,10 +334,11 @@
                                                     size="2"
                                                     id="rolesEdit"
                                                     name="userRolesSelector">
-
-                                                <option th:each="role: ${roles}"
-                                                        th:text="${role.toString()}"
-                                                        selected>
+                                                <option selected="true" value="2">
+                                                    User
+                                                </option>
+                                                <option value="4">
+                                                    Admin
                                                 </option>
                                             </select>
                                         </div>

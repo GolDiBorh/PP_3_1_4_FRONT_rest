@@ -1,6 +1,8 @@
 package ru.kata.spring.boot_security.demo.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -11,6 +13,7 @@ import ru.kata.spring.boot_security.demo.model.Role;
 import ru.kata.spring.boot_security.demo.model.User;
 import ru.kata.spring.boot_security.demo.repository.UserRepository;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -55,6 +58,19 @@ public class UserService {
         userToUpdate.setAge(user.getAge());
         userToUpdate.setRoles(user.getRoles());
         userRepository.save(userToUpdate);
+    }
+    public List<GrantedAuthority> getUserAuthority(Set<Role> userRoles) {
+        Set<GrantedAuthority> roles = new HashSet<GrantedAuthority>();
+        for (Role role : userRoles) {
+            roles.add(new SimpleGrantedAuthority(role.getName()));
+        }
+        List<GrantedAuthority> grantedAuthorities = new ArrayList<>(roles);
+        return grantedAuthorities;
+    }
+
+    public UserDetails buildUserForAuthentication(User user, List<GrantedAuthority> authorities) {
+        return new org.springframework.security.core.userdetails.User(user.getUsername(), user.getPassword(),
+                true, true, true, true, authorities);
     }
 
     @Transactional

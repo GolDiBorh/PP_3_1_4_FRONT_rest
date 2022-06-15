@@ -8,8 +8,11 @@ import javax.persistence.Column;
 
 @Component
 public class DBsave {
-    @Autowired
-    UserService userService;
+    private final UserService userService;
+
+    public DBsave(UserService userService) {
+        this.userService = userService;
+    }
 
     @PostConstruct
     public void setData() {

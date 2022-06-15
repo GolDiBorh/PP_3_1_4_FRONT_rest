@@ -12,7 +12,7 @@ import java.util.List;
 @Service("roleService")
 @Transactional
 public class RoleService {
-    private RoleRepository roleRepository;
+    private final RoleRepository roleRepository;
 
 
     @Autowired
@@ -27,7 +27,7 @@ public class RoleService {
     public List<Role> getAllRoles() {
         return roleRepository.findAll();
     }
-
+    @Transactional
     public Role getByName(String name) {
         return roleRepository.findByName(name);
     }
