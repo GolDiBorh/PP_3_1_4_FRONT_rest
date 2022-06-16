@@ -14,7 +14,7 @@ import java.util.Set;
 @Setter
 @Entity
 @Table(name = "roles")
-public class Role {
+public class Role implements GrantedAuthority {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long id;
@@ -33,5 +33,10 @@ public class Role {
     @Override
     public String toString() {
         return name.substring(5);
+    }
+
+    @Override
+    public String getAuthority() {
+        return getName();
     }
 }

@@ -47,8 +47,4 @@ public class User {
         this.age = age;
         this.roles = roles;
     }
-
-    public void addRole(Role role) {
-        roles.add(role);
-    }
 }
