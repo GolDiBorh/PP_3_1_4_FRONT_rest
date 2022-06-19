@@ -1,6 +1,7 @@
 package ru.kata.spring.boot_security.demo.model;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 
@@ -18,25 +19,23 @@ public class Role implements GrantedAuthority {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long id;
-    @Column(name = "role_name")
-    private String name;
+    @Column(name = "role")
+    private String role;
 
-    public Role(String name) {
-        this.name = name;
+    public Role(String role) {
+        this.role = role;
     }
-    @ManyToMany(fetch = FetchType.LAZY, mappedBy = "roles")
-    private Set<User> users = new HashSet<>();
 
     public Role() {
     }
 
     @Override
     public String toString() {
-        return name.substring(5);
+        return role.substring(5);
     }
 
     @Override
     public String getAuthority() {
-        return getName();
+        return getRole();
     }
 }

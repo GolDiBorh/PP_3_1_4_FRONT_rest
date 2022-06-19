@@ -1,41 +1,39 @@
 package ru.kata.spring.boot_security.demo.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.kata.spring.boot_security.demo.model.Role;
 import ru.kata.spring.boot_security.demo.model.User;
+import ru.kata.spring.boot_security.demo.repository.RoleRepository;
 import ru.kata.spring.boot_security.demo.repository.UserRepository;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import javax.annotation.PostConstruct;
+import java.util.*;
 
 @Service
-
+@Transactional
 public class UserService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final RoleRepository roleRepository;
 
     @Autowired
-    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder) {
+    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder, RoleRepository roleRepository) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
+        this.roleRepository = roleRepository;
     }
 
 
-    @Transactional
+
     public User findByUsername(String username) {
         return userRepository.findByUsername(username);
     }
 
-    @Transactional
+
     public void saveUser(User user) {
         user.setPassword(passwordEncoder.encode(user.getPassword()));
 
@@ -46,32 +44,35 @@ public class UserService {
         return userRepository.findAll();
     }
 
-
-    public User getUserById(Long id) {
-        return userRepository.getOne(id);
+    public User getUserById(long id) {
+        User user = null;
+        Optional<User> optional = userRepository.findById(id);
+        if (optional.isPresent()) {
+            user = optional.get();
+        }
+        return user;
     }
 
-    @Transactional
+
     public void update(User user) {
         userRepository.save(user);
     }
 
 
-    @Transactional
+
     public void deleteUserById(Long id) {
         userRepository.deleteById(id);
     }
 
-    @Transactional
-    public void setInitData() {
-        Role userRole = new Role("ROLE_USER");
-        Role adminRole = new Role("ROLE_ADMIN");
-        userRepository.save(new User("user", "user", "user@mail.ru", 33, new HashSet<Role>() {{
-            add(userRole);
-        }}));
-        userRepository.save(new User("admin", "admin", "admin@mail.ru", 33, new HashSet<Role>() {{
-            add(userRole);
-            add(adminRole);
-        }}));
+    public void addDefaultUser() {
+        Set<Role> roles1 = new HashSet<>();
+        roles1.add(roleRepository.findById(1L).orElse(null));
+        Set<Role> roles2 = new HashSet<>();
+        roles2.add(roleRepository.findById(1L).orElse(null));
+        roles2.add(roleRepository.findById(2L).orElse(null));
+        User user1 = new User("User", "Userovich",(byte) 33,"user@mail.ru", "user", "user" ,roles1);
+        User user2 = new User("Admin", "Adminov",(byte) 33, "admin@mail.ru", "admin","admin",roles2);
+        saveUser(user1);
+        saveUser(user2);
     }
 }

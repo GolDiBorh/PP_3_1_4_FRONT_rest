@@ -16,6 +16,6 @@ public class DBsave {
 
     @PostConstruct
     public void setData() {
-        userService.setInitData();
+        userService.addDefaultUser();
     }
 }
